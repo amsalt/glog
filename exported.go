@@ -1,4 +1,4 @@
-package log
+package glog
 
 import (
 	_ "github.com/amsalt/log/adaptor"
