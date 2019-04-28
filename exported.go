@@ -1,7 +1,7 @@
 package glog
 
 import (
-	_ "github.com/amsalt/log/adaptor"
-	_ "github.com/amsalt/log/adaptor/logrus"
-	_ "github.com/amsalt/log/adaptor/zaplog"
+	_ "github.com/amsalt/glog/adaptor"
+	_ "github.com/amsalt/glog/adaptor/logrus"
+	_ "github.com/amsalt/glog/adaptor/zaplog"
 )
