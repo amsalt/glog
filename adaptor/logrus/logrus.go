@@ -2,8 +2,8 @@ package logrus
 
 import (
 	"github.com/Sirupsen/logrus"
-	"github.com/amsalt/glog"
-	"github.com/amsalt/glog/adaptor"
+	"github.com/amsalt/log"
+	"github.com/amsalt/log/adaptor"
 )
 
 type logger struct {
@@ -11,16 +11,16 @@ type logger struct {
 	entry *logrus.Entry
 }
 
-func (l *logger) SetLevel(lv glog.Level) {
+func (l *logger) SetLevel(lv log.Level) {
 	l.BaseAdaptor.SetLevel(lv)
 	switch lv {
-	case glog.FatalLevel:
+	case log.FatalLevel:
 		l.entry.Logger.SetLevel(logrus.FatalLevel)
-	case glog.ErrorLevel:
+	case log.ErrorLevel:
 		l.entry.Logger.SetLevel(logrus.ErrorLevel)
-	case glog.WarningLevel:
+	case log.WarningLevel:
 		l.entry.Logger.SetLevel(logrus.WarnLevel)
-	case glog.InfoLevel:
+	case log.InfoLevel:
 		l.entry.Logger.SetLevel(logrus.InfoLevel)
 	default:
 		l.entry.Logger.SetLevel(logrus.DebugLevel)
@@ -77,7 +77,7 @@ func newLogger(opts *options, lo *logrus.Logger) *logger {
 	l.config(opts, lo)
 	l.entry = logrus.NewEntry(lo)
 
-	l.SetLevel(glog.DebugLevel)
+	l.SetLevel(log.DebugLevel)
 	return l
 }
 
@@ -114,13 +114,13 @@ type builder struct {
 	logger *logrus.Logger
 }
 
-func NewBuilder(logger *logrus.Logger) glog.Builder {
+func NewBuilder(logger *logrus.Logger) log.Builder {
 	b := new(builder)
 	b.logger = logger
 	return b
 }
 
-func (b *builder) Build(opts ...glog.BuildOption) glog.Logger {
+func (b *builder) Build(opts ...log.BuildOption) log.Logger {
 	defaultOpts := &options{}
 	for _, o := range opts {
 		o(defaultOpts)

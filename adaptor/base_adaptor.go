@@ -1,25 +1,25 @@
 package adaptor
 
-import "github.com/amsalt/glog"
+import "github.com/amsalt/log"
 
 type BaseAdaptor struct {
-	level glog.Level
+	level log.Level
 }
 
 func NewBaseAdaptor() *BaseAdaptor {
 	ba := new(BaseAdaptor)
-	ba.SetLevel(glog.DebugLevel)
+	ba.SetLevel(log.DebugLevel)
 	return ba
 }
 
-func (l *BaseAdaptor) SetLevel(lv glog.Level) {
+func (l *BaseAdaptor) SetLevel(lv log.Level) {
 	l.level = lv
 }
 
-func (l *BaseAdaptor) GetLevel() glog.Level {
+func (l *BaseAdaptor) GetLevel() log.Level {
 	return l.level
 }
 
-func (l *BaseAdaptor) IsEnabledLevel(lv glog.Level) bool {
+func (l *BaseAdaptor) IsEnabledLevel(lv log.Level) bool {
 	return l.level <= lv
 }

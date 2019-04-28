@@ -1,8 +1,8 @@
 package zaplog
 
 import (
-	"github.com/amsalt/glog"
-	"github.com/amsalt/glog/adaptor"
+	"github.com/amsalt/log"
+	"github.com/amsalt/log/adaptor"
 	"go.uber.org/zap"
 )
 
@@ -24,16 +24,16 @@ func newLogger(opts *options, sugar *zap.SugaredLogger) *logger {
 	return l
 }
 
-func (l *logger) parseLevel(lv glog.Level) zap.AtomicLevel {
+func (l *logger) parseLevel(lv log.Level) zap.AtomicLevel {
 	l.BaseAdaptor.SetLevel(lv)
 	switch lv {
-	case glog.FatalLevel:
+	case log.FatalLevel:
 		return zap.NewAtomicLevelAt(zap.FatalLevel)
-	case glog.ErrorLevel:
+	case log.ErrorLevel:
 		return zap.NewAtomicLevelAt(zap.ErrorLevel)
-	case glog.WarningLevel:
+	case log.WarningLevel:
 		return zap.NewAtomicLevelAt(zap.WarnLevel)
-	case glog.InfoLevel:
+	case log.InfoLevel:
 		return zap.NewAtomicLevelAt(zap.InfoLevel)
 	default:
 		return zap.NewAtomicLevelAt(zap.DebugLevel)
@@ -84,13 +84,13 @@ type builder struct {
 	logger *zap.SugaredLogger
 }
 
-func NewBuilder(logger *zap.SugaredLogger) glog.Builder {
+func NewBuilder(logger *zap.SugaredLogger) log.Builder {
 	b := new(builder)
 	b.logger = logger
 	return b
 }
 
-func (b *builder) Build(opts ...glog.BuildOption) glog.Logger {
+func (b *builder) Build(opts ...log.BuildOption) log.Logger {
 	defaultOpts := &options{}
 	for _, o := range opts {
 		o(defaultOpts)
