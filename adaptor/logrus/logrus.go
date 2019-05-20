@@ -89,6 +89,7 @@ func (l *logger) config(opts *options, lo *logrus.Logger) {
 		lo.SetFormatter(opts.formatter)
 	} else {
 		defaultFormatter := logrus.TextFormatter{
+			ForceColors:     true,
 			TimestampFormat: "2006-01-02T15:04:05.000",
 			FullTimestamp:   true,
 		}
