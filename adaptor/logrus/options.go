@@ -4,8 +4,8 @@ import (
 	"io"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/amsalt/log"
+	"github.com/sirupsen/logrus"
 )
 
 type options struct {

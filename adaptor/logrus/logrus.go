@@ -1,9 +1,9 @@
 package logrus
 
 import (
-	"github.com/Sirupsen/logrus"
 	"github.com/amsalt/log"
 	"github.com/amsalt/log/adaptor"
+	"github.com/sirupsen/logrus"
 )
 
 type logger struct {

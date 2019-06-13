@@ -1,6 +1,11 @@
 package log
 
-import "sync"
+import (
+	"path"
+	"runtime"
+	"strconv"
+	"sync"
+)
 
 // package log implements a simple logging facade for golang logger library.
 
@@ -45,6 +50,9 @@ func ParseLevel(level string) Level {
 type Logger interface {
 	SetLevel(lv Level)
 	GetLevel() Level
+
+	SetPrintCallerLevel(lv Level)
+	GetPrintCallerLevel() Level
 
 	Debug(args ...interface{})
 	Debugf(format string, args ...interface{})
@@ -102,41 +110,102 @@ func GetLevel() Level {
 	return GetLogger().GetLevel()
 }
 
+func SetPrintCallerLevel(lv Level) {
+	GetLogger().SetPrintCallerLevel(lv)
+}
+
+func GetPrintCallerLevel() Level {
+	return GetLogger().GetPrintCallerLevel()
+}
+
 func Debug(args ...interface{}) {
-	GetLogger().Debug(args...)
+	output(DebugLevel, args...)
 }
 func Debugf(format string, args ...interface{}) {
-	GetLogger().Debugf(format, args...)
+	outputf(DebugLevel, format, args...)
 }
 
 func Warning(args ...interface{}) {
-	GetLogger().Warning(args...)
+	output(WarningLevel, args...)
 }
 
 func Warningf(format string, args ...interface{}) {
-	GetLogger().Warningf(format, args...)
+	outputf(WarningLevel, format, args...)
 }
 
 func Info(args ...interface{}) {
-	GetLogger().Info(args...)
+	output(InfoLevel, args...)
 }
 func Infof(format string, args ...interface{}) {
-	GetLogger().Infof(format, args...)
+	outputf(InfoLevel, format, args...)
 }
 
 func Error(args ...interface{}) {
-	GetLogger().Error(args...)
+	output(ErrorLevel, args...)
 }
 func Errorf(format string, args ...interface{}) {
-	GetLogger().Errorf(format, args...)
+	outputf(ErrorLevel, format, args...)
 }
 
 // Fatal output error at FatalLevel and panic
 func Fatal(args ...interface{}) {
-	GetLogger().Fatal(args...)
+	output(FatalLevel, args...)
 }
 
 // Fatalf represents the printf format of Fatal.
 func Fatalf(format string, args ...interface{}) {
-	GetLogger().Fatalf(format, args...)
+	outputf(FatalLevel, format, args...)
+}
+
+func output(level Level, args ...interface{}) {
+	if GetLevel() < level {
+		return
+	}
+	if GetPrintCallerLevel() <= level {
+		args = append([]interface{}{addCallerInfo()}, args...)
+	}
+	switch level {
+	case FatalLevel:
+		GetLogger().Fatal(args...)
+	case ErrorLevel:
+		GetLogger().Error(args...)
+	case WarningLevel:
+		GetLogger().Warning(args...)
+	case InfoLevel:
+		GetLogger().Info(args...)
+	case DebugLevel:
+		GetLogger().Debug(args...)
+	}
+}
+
+func outputf(level Level, format string, args ...interface{}) {
+	if GetLevel() < level {
+		return
+	}
+	if GetPrintCallerLevel() <= level {
+		format = addCallerInfo() + format
+	}
+	switch level {
+	case FatalLevel:
+		GetLogger().Fatalf(format, args...)
+	case ErrorLevel:
+		GetLogger().Errorf(format, args...)
+	case WarningLevel:
+		GetLogger().Warningf(format, args...)
+	case InfoLevel:
+		GetLogger().Infof(format, args...)
+	case DebugLevel:
+		GetLogger().Debugf(format, args...)
+	}
+}
+
+func addCallerInfo() (info string) {
+	_, file, line, ok := runtime.Caller(3)
+	if !ok {
+		file = "???"
+		line = 0
+	}
+	_, filename := path.Split(file)
+	info = "[" + filename + ":" + strconv.Itoa(line) + "] "
+	return
 }
